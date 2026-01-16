@@ -93,7 +93,6 @@ function draw(cr, x0, y0, draw_bar)
         end
         x, y = incrementor(x, y, bar_width)
     end
-    last_line = nil
 end
 
 local visualizers = {
@@ -139,7 +138,7 @@ local visualizer = visualizers[orientation] or draw_bottom
 function conky_visualizer(n)
     coroutine.resume(co)
 
-    if (last_line and (conky_window.height or 0 > 0) and (conky_window.width or 0 > 0)) then
+    if (conky_window.height or 0 > 0 and conky_window.width or 0 > 0) then
         -- Cairo setup
         local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual,
             conky_window.width, conky_window.height)
