@@ -1,6 +1,6 @@
 # conky-cava-visualizer
 
-A visualizer made using Conky, Cava, Lua, and Cairo. No extra windows, just a conky visualizer on your desktop.
+An audio visualizer made using Conky, Cava, Lua, and Cairo. No extra windows, just a cava visualizer on your desktop.
 
 ![visualizer](assets/visualizer.png)
 
