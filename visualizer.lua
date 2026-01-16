@@ -135,7 +135,7 @@ local visualizers = {
 local visualizer = visualizers[orientation] or draw_bottom
 
 -- Main method
-function conky_visualizer(n)
+function conky_visualizer()
     coroutine.resume(co)
 
     if (conky_window.height or 0 > 0 and conky_window.width or 0 > 0) then
