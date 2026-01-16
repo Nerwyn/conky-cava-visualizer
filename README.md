@@ -2,15 +2,18 @@
 
 A visualizer made using Conky, Cava, Lua, and Cairo. No extra windows, just a conky visualizer on your desktop.
 
+![visualizer](assets/visualizer.png)
+
 ## Setup
 
 1. Install [cava](https://github.com/karlstav/cava) using the instructions provided in its repository.
-2. Download this repository TODO add a release or something.
-3. Open a command line in the visualizer folder and run it using the command `conky -c ./visualizer.conf`.
+2. On this repository click `<> Code` and then `Download ZIP`.
+3. Unzip the folder to you desired location. I recommend `~/.config/conky`.
+4. Open a command line in the visualizer folder and run it using the command `conky -c ./visualizer.conf`.
 
 ## Configuration
 
-Configuration for this visualizer lives in either the conky or cava config files depending on which settings it is relevant to.
+Configuration options exist in both the conky and cava configuration files.
 
 ### visualizer.conf
 
@@ -22,7 +25,7 @@ Set `minimum_height` and `minimum_width` to your desired visualizer size. I foun
 
 #### Position
 
-Set `gap_x` and `gap_y` to reposition the visualizer. DO NOT use a non `_middle` alignment, doing so will break the visualizer lua script calculations.
+Set `gap_x` and `gap_y` to reposition the visualizer. DO NOT use non `_middle` alignments, doing so will break the visualizer lua script calculations.
 
 #### Monitor
 
