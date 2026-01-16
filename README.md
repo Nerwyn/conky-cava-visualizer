@@ -9,7 +9,7 @@ A visualizer made using Conky, Cava, Lua, and Cairo. No extra windows, just a co
 1. Install [conky](https://github.com/brndnmtthws/conky) using the instructions provided in its repository.
 2. Install [cava](https://github.com/karlstav/cava) using the instructions provided in its repository.
 3. On this repository click `<> Code` and then `Download ZIP`.
-4. Unzip the folder to you desired location. I recommend `~/.config/conky`.
+4. Unzip the folder to your desired location. I recommend `~/.config/conky`.
 5. Open a command line in the visualizer folder and run it using the command `conky -c ./visualizer.conf`.
 
 ## Configuration
