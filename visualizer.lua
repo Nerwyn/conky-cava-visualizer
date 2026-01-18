@@ -131,7 +131,7 @@ local visualizers = {
         end)
     end
 }
-local visualizer = visualizers[orientation] or draw_bottom
+local visualizer = visualizers[orientation] or visualizers['bottom']
 
 -- Main method
 function conky_visualizer()
