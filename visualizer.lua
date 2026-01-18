@@ -38,11 +38,9 @@ local rgb = hex2rgb(color)
 
 -- Cava pipe setup
 local pipe = io.popen('cava -p ./config', 'r')
-local last_line = ''
 function read_cava()
     for line in pipe:lines() do
-        last_line = line
-        coroutine.yield()
+        coroutine.yield(line)
     end
 end
 local co = coroutine.create(read_cava)
@@ -82,10 +80,11 @@ local bar_height_getters = {
 local get_bar_height = bar_height_getters[is_sideways and 'vertical' or 'horizontal']
 
 function draw(cr, x0, y0, draw_bar)
+    local _, line = coroutine.resume(co)
     local x = x0
     local y = y0
     local bar_width = get_bar_width()
-    for i in string.gmatch(last_line, "([^;]+)") do
+    for i in string.gmatch(line, "([^;]+)") do
         i = tonumber(i or 0)
         if i > 0 then
             local bar_height = get_bar_height(i)
@@ -136,8 +135,6 @@ local visualizer = visualizers[orientation] or draw_bottom
 
 -- Main method
 function conky_visualizer()
-    coroutine.resume(co)
-
     if (conky_window.height or 0 > 0 and conky_window.width or 0 > 0) then
         -- Cairo setup
         local cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual,
