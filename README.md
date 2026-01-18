@@ -22,7 +22,7 @@ The conky configuration file.
 
 #### Height and Width
 
-Set `minimum_height` and `minimum_width` to your desired visualizer size. I found that I also needed to reduce width by 8px when making it full screen, otherwise conky would not load the configuration.
+Set `minimum_height` and `minimum_width` to your desired visualizer size. I found that I also needed to reduce width by 8px when making it full screen, otherwise conky would not load the configuration. For reference the default values are for a 4K (3840 x 2160) screen at 150% scale with the 8px width reduction, and the visualizer covers the entire screen.
 
 #### Position
 
