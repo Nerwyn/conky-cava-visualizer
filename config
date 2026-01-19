@@ -1,6 +1,7 @@
 ## Configuration file for CAVA.
 # Remove the ; to change parameters.
-# Unused parameters removed and new ones added
+# Unused and deprecated parameters removed and new ones added.
+# Do not surround parameters with quotes.
 # Original from https://github.com/karlstav/cava/blob/master/example_files/config
 
 [conky]
@@ -9,9 +10,20 @@
 # Can be top, bottom, horizontal, left, right, or vertical, defaults to bottom
 ; orientation = bottom
 
+# Bar color can be defined by hex code.
+; color = #FFF
+
+# Opacity can be a float from 0 - 1. Applies to both colors and image masks.
+; opacity = 1
+
+# Path to a PNG image to use as a mask for the bars.
+; image_mask = /full/path/to/your/image.png
+
 [general]
 
 # Accepts only non-negative values.
+# Must be less than conky update interval in Hz (default 0.01s/100Hz)
+# This is to prevent the cava pipe from becoming backlogged
 ; framerate = 60
 
 # 'autosens' will attempt to decrease sensitivity if the bars peak. 1 = on, 0 = off
@@ -23,9 +35,9 @@
 ; sensitivity = 100
 
 # The number of bars (0-512). 0 sets it to auto (fill up console).
-# Bars' width and space between bars in number of characters.
-# Change this as needed
-; bars = 512
+# Bars' width and space between bars in number of pixels.
+# Change this as needed, higher values can make the visualizer lag.
+bars = 96
 ; bar_spacing = 1
 
 # Lower and higher cutoff frequencies for lowest and highest bars
@@ -148,11 +160,7 @@ data_format = ascii # DO NOT CHANGE
 
 [color]
 
-# Colors can be defined by hex code.
-; color = #FFF
-
-# Opacity can be a float from 0 - 1
-; opacity = 1
+# Use the color and opacity options in the conky section above instead
 
 [smoothing]
 
