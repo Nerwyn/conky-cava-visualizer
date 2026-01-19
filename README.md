@@ -2,7 +2,7 @@
 
 An audio visualizer made using Conky, Cava, Lua, and Cairo. No extra windows, just a cava visualizer on your desktop.
 
-![visualizer](assets/visualizer.png)
+![visualizer](assets/visualizer.mp4)
 
 ## Setup
 
@@ -34,22 +34,22 @@ Set `xinerama_head` to the index of the monitor you want to display the visualiz
 
 ### Cava config
 
-The cava configuration file. Most options in this file are handled by cava itself. For those refer to the descriptions in file provided by the cava developers. Some additional options have been added or are used specifically by the conky visualizer lua script. You may also find the [cava example config file](https://github.com/karlstav/cava/blob/master/example_files/config) from its repository useful.
+The cava configuration file. Most options in this file are handled by cava itself. For those refer to the descriptions in file provided by the cava developers. You may also find the [cava example config file](https://github.com/karlstav/cava/blob/master/example_files/config) from its repository useful.
+
+Some additional options have been added for use by the conky visualizer lua script, as there wasn't an equivalent or the equivalent could not be used. New options are in the `[conky]` section at the top of the file and described below. Do not surround your option values in quotes, as it will break the lua ini parser.
 
 #### Orientation
-
-[conky] orientation
 
 NOT the cava orientation value, which has been removed from this file and must be left at its default value. Can be `top`, `bottom`, `horizontal`, `left`, `right`, or `vertical`. Defaults to `bottom`.
 
 #### Color
 
-[color] color
-
-The visualizer bar color. Similar to the original cav foreground option. Must be a hex color.
+The visualizer bar color. Similar to the original cava foreground option. Must be a hex color. Defaults to `#FFF`.
 
 #### Opacity
 
-[color] opacity
+The opacity of the bars. Must be a float between 0 and 1. Defaults to `1`.
 
-The opacity of the bars. Must be a float between 0 and 1.
+#### Image Mask
+
+Use an image mask instead of a solid color for the bars (see example video). Must be a png. Set `image_mask` to the full path to the image.
