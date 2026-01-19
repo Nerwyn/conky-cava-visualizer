@@ -2,7 +2,7 @@
 
 An audio visualizer made using Conky, Cava, Lua, and Cairo. No extra windows, just a cava visualizer on your desktop.
 
-![visualizer](assets/visualizer.mp4)
+https://github.com/user-attachments/assets/e49a917a-a9d7-4def-ae24-2e2c62c7e40d
 
 ## Setup
 
