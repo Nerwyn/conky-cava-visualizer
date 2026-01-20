@@ -1,6 +1,5 @@
 require 'cairo'
 require 'cairo_xlib'
-require 'cairo_imlib2_helper'
 
 -- Read config
 local inifile = require 'inifile'

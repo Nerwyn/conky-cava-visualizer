@@ -7,7 +7,7 @@ https://github.com/user-attachments/assets/e49a917a-a9d7-4def-ae24-2e2c62c7e40d
 ## Setup
 
 1. Install [conky](https://github.com/brndnmtthws/conky) using the instructions provided in its repository or using a package manager.
-  - You need to use the `conky-all` package variant so it has lua and cairo support.
+  - You need to use the `conky-all` package variant which has cairo bindings for lua.
 2. Install [cava](https://github.com/karlstav/cava) using the instructions provided in its repository or using a package manager.
 3. On this repository click `<> Code` and then `Download ZIP`.
 4. Unzip the folder to your desired location. I recommend `~/.config/conky`.
