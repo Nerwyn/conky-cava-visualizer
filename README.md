@@ -12,6 +12,7 @@ https://github.com/user-attachments/assets/e49a917a-a9d7-4def-ae24-2e2c62c7e40d
 3. On this repository click `<> Code` and then `Download ZIP`.
 4. Unzip the folder to your desired location. I recommend `~/.config/conky`.
 5. Open a command line in the visualizer folder and run it using the command `conky -c ./visualizer.conf`.
+  - You must run this command in the same folder as the files so the lua script can find the provided cava configuration file.
 
 ## Configuration
 
