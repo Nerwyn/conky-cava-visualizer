@@ -45,10 +45,10 @@ local rgb = hex2rgb(color)
 
 -- Cava pipe setup
 function read_cava()
-		local pipe = io.popen('cava -p ./config', 'r')
-    for line in pipe:lines() do
-        coroutine.yield(line)
-    end
+  local pipe = io.popen('cava -p ./config', 'r')
+  for line in pipe:lines() do
+    coroutine.yield(line)
+  end
 end
 local co = coroutine.create(read_cava)
 
@@ -128,27 +128,27 @@ local visualizer = visualizers[orientation] or visualizers['bottom']
 
 -- Setup/teardown
 function conky_setup_visualizer()
-	-- Conky window width/height is 0 for the first few renders which causes errors
+  -- Conky window width/height is 0 for the first few renders which causes errors
   window_height = conky_window.height
   window_width = conky_window.width
   if (window_height <= 0 or window_width <= 0) then
     return
   end
 
-	-- Cairo setup
-	cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, window_width,
+  -- Cairo setup
+  cs = cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual, window_width,
     window_height)
   cr = cairo_create(cs)
   cairo_set_source_rgba(cr, rgb[1], rgb[2], rgb[3], opacity)
 
-	-- Bar width calculation
+  -- Bar width calculation
   if is_sideways then
     bar_width = ((window_height - bar_spacing) / n_bars) - bar_spacing
   else
     bar_width = ((window_width - bar_spacing) / n_bars) - bar_spacing
   end
 
-	-- Use an image mask instead of color if set in cava config
+  -- Use an image mask instead of color if set in cava config
   if image_mask ~= '' then
     img0_cs = cairo_image_surface_create_from_png(image_mask)
     img0_width = cairo_image_surface_get_width(img0_cs);
@@ -174,7 +174,7 @@ function conky_preload_visualizer()
     return
   end
 
-	-- Conky window width/height is 0 for the first few renders which causes errors
+  -- Conky window width/height is 0 for the first few renders which causes errors
   if conky_window.height ~= window_height or conky_window.width ~= window_width then
     conky_shutdown_visualizer()
     conky_setup_visualizer()
