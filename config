@@ -18,7 +18,6 @@
 
 # Path to a PNG image to use as a mask for the bars.
 ; image_mask = /full/path/to/your/image.png
-image_mask = /home/nerwyn/Pictures/wallpapers/pink_space.png
 
 [general]
 
