@@ -1,0 +1,20 @@
+{
+	"Lua.diagnostics.globals": [
+		"conky_window",
+		"cairo_create",
+		"cairo_set_source_rgba",
+		"cairo_rectangle",
+		"cairo_fill",
+		"cairo_scale",
+		"cairo_destroy",
+		"cairo_paint_with_alpha",
+		"cairo_xlib_surface_create",
+		"cairo_set_source_surface",
+		"cairo_surface_destroy",
+		"cairo_image_surface_create",
+		"cairo_image_surface_get_height",
+		"cairo_image_surface_get_width",
+		"cairo_image_surface_create_from_png",
+		"CAIRO_FORMAT_ARGB32",
+	]
+}

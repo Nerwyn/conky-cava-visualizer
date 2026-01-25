@@ -48,13 +48,13 @@ local backends = {
 	},
 }
 
-if love then
-	backends.love = {
-		lines = love.filesystem.lines,
-		write = function(name, contents) love.filesystem.write(name, contents) end,
-	}
-	defaultBackend = "love"
-end
+-- if love then
+-- 	backends.love = {
+-- 		lines = love.filesystem.lines,
+-- 		write = function(name, contents) love.filesystem.write(name, contents) end,
+-- 	}
+-- 	defaultBackend = "love"
+-- end
 
 function inifile.parse(name, backend)
 	backend = backend or defaultBackend

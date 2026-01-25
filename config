@@ -18,11 +18,12 @@
 
 # Path to a PNG image to use as a mask for the bars.
 ; image_mask = /full/path/to/your/image.png
+image_mask = /home/nerwyn/Pictures/wallpapers/pink_space.png
 
 [general]
 
 # Accepts only non-negative values.
-# Must be less than conky update interval in Hz (default 0.01s/100Hz)
+# Must be less than conky update interval in Hz (default 0.015s/~66Hz)
 # This is to prevent the cava pipe from becoming backlogged
 ; framerate = 60
 
@@ -149,11 +150,8 @@ channels = mono
 mono_option = average
 ; reverse = 0
 
-# Raw data format. Can be 'binary' or 'ascii'.
-data_format = ascii # DO NOT CHANGE
-
-# Ascii max value. In 'ascii' mode range will run from 0 to value specified here
-# ascii_max_range = 1000
+# Binary bit format, can be '8bit' (0-255) or '16bit' (0-65530).
+; bit_format = 16bit
 
 # show waveform instead of frequency spectrum, 1 = on, 0 = off
 ; waveform = 0
