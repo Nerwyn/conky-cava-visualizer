@@ -2,9 +2,9 @@ require 'cairo'
 require 'cairo_xlib'
 
 -- Read config
-local cava_config = './config'
+local cava_config_file = './config'
 local inifile = require 'inifile'
-local config = inifile.parse(cava_config)
+local config = inifile.parse(cava_config_file)
 
 local orientation = string.gsub(config['conky']['orientation'] or 'bottom', '%s+', '')
 local sideways = { 'left', 'right', 'vertical' }
@@ -56,7 +56,7 @@ local rgb = hex2rgb(color)
 
 -- Cava pipe setup
 local function read_cava()
-  local pipe = io.popen('cava -p ' .. cava_config, 'r')
+  local pipe = io.popen('cava -p ' .. cava_config_file, 'r')
   if pipe == nil then
     print('Cava pipe failed')
     return
