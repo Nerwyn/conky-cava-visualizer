@@ -1,46 +1,10 @@
 require 'cairo'
 require 'cairo_xlib'
 
--- Read config
 local cava_config_file = './config'
 local inifile = require 'inifile'
-local config = inifile.parse(cava_config_file)
 
-local orientation = string.gsub(config['conky']['orientation'] or 'bottom', '%s+', '')
-local sideways = { 'left', 'right', 'vertical' }
-local is_sideways = false
-for _, o in ipairs(sideways) do
-  if orientation == o then
-    is_sideways = true
-    break
-  end
-end
-
-local n_bars = tonumber(config['general']['bars'] or 512)
-local bar_spacing = tonumber(config['general']['bar_spacing'] or 1)
-
-local bar_max = 65535
-local byte_format = '<H'
-local byte_size = 2
-local bit_format = string.gsub(config['output']['bit_format'] or '16bit', '%s+', '')
-if bit_format == '8bit' then
-  bar_max = 255
-  byte_format = '<B'
-  byte_size = 1
-end
-
-local color = string.gsub(config['conky']['color'] or '#FFF', '%s+', '')
-local opacity = tonumber(config['conky']['opacity'] or 1)
-local image_mask = string.gsub(config['conky']['image_mask'] or '', '%s+', '')
-
--- Set on conky load
-local cs
-local cr
-local window_height
-local window_width
-local bar_width
-
--- Hex color parsing https://gist.github.com/fernandohenriques/12661bf250c8c2d8047188222cab7e28
+-- https://gist.github.com/fernandohenriques/12661bf250c8c2d8047188222cab7e28
 local function hex2rgb(hex)
   hex = hex:gsub('#', '')
   if hex:len() == 3 then
@@ -52,7 +16,62 @@ local function hex2rgb(hex)
   end
 end
 
-local rgb = hex2rgb(color)
+-- Set on conky load and config read
+local cs
+local cr
+
+local window_height
+local window_width
+
+local n_bars
+local bar_spacing
+local bar_max
+
+local bar_width_getters = {
+  horizontal = function()
+    return (((window_width or 0) - bar_spacing) // n_bars) - bar_spacing
+  end,
+
+  vertical = function()
+    return (((window_height or 0) - bar_spacing) // n_bars) - bar_spacing
+  end
+}
+local bar_width
+
+local orientation
+local is_sideways
+
+local incrementors = {
+  horizontal = function(x, y)
+    return x + bar_width + bar_spacing, y
+  end,
+
+  vertical = function(x, y)
+    return x, y + bar_width + bar_spacing
+  end
+}
+local incrementor
+
+local bar_height_getters = {
+  horizontal = function(value)
+    return value * window_height // bar_max
+  end,
+
+  vertical = function(value)
+    return value * window_width // bar_max
+  end
+}
+local get_bar_height
+
+local bit_format
+local byte_format
+local byte_size
+
+local color
+local rgb
+
+local opacity
+local image_mask
 
 -- Cava pipe setup
 local function read_cava()
@@ -73,28 +92,6 @@ end
 local co = coroutine.create(read_cava)
 
 -- Visualizer mode setup
-local incrementors = {
-  horizontal = function(x, y)
-    return x + bar_width + bar_spacing, y
-  end,
-
-  vertical = function(x, y)
-    return x, y + bar_width + bar_spacing
-  end
-}
-local incrementor = incrementors[is_sideways and 'vertical' or 'horizontal']
-
-local bar_height_getters = {
-  horizontal = function(value)
-    return value * window_height // bar_max
-  end,
-
-  vertical = function(value)
-    return value * window_width // bar_max
-  end
-}
-local get_bar_height = bar_height_getters[is_sideways and 'vertical' or 'horizontal']
-
 local function draw(x, y, draw_bar)
   for i = 1, n_bars do
     local _, value = coroutine.resume(co)
@@ -141,7 +138,65 @@ local visualizers = {
     end)
   end
 }
-local visualizer = visualizers[orientation] or visualizers['bottom']
+local visualizer
+
+local function read_config()
+  local config = inifile.parse(cava_config_file)
+
+  -- Orientation, number of bars, and spacing
+  local orientation_new = string.gsub(config['conky']['orientation'] or 'bottom', '%s+', '')
+  local n_bars_new = tonumber(config['general']['bars'] or 512)
+  local bar_spacing_new = tonumber(config['general']['bar_spacing'] or 1)
+  if orientation ~= orientation_new or n_bars ~= n_bars_new or bar_spacing ~= bar_spacing_new then
+    orientation = orientation_new
+    n_bars = n_bars_new
+    bar_spacing = bar_spacing_new
+    local sideways = { 'left', 'right', 'vertical' }
+    is_sideways = false
+    for _, o in ipairs(sideways) do
+      if orientation == o then
+        is_sideways = true
+        break
+      end
+    end
+    incrementor = incrementors[is_sideways and 'vertical' or 'horizontal']
+    get_bar_height = bar_height_getters[is_sideways and 'vertical' or 'horizontal']
+    bar_width = bar_width_getters[is_sideways and 'vertical' or 'horizontal']()
+    visualizer = visualizers[orientation] or visualizers['bottom']
+  end
+
+  -- Bit format
+  local bit_format_new = string.gsub(config['output']['bit_format'] or '16bit', '%s+', '')
+  if bit_format_new ~= bit_format then
+    bit_format = bit_format_new
+    if bit_format == '8bit' then
+      bar_max = 255
+      byte_format = '<B'
+      byte_size = 1
+    else
+      bar_max = 65535
+      byte_format = '<H'
+      byte_size = 2
+    end
+  end
+
+  -- Color and opacity
+  local color_new = string.gsub(config['conky']['color'] or '#FFF', '%s+', '')
+  local opacity_new = tonumber(config['conky']['opacity'] or 1)
+  if color ~= color_new or opacity ~= opacity_new then
+    color = color_new
+    rgb = hex2rgb(color)
+    opacity = opacity_new
+    if (cr ~= nil) then
+      cairo_set_source_rgba(cr, rgb[1], rgb[2], rgb[3], opacity)
+    end
+  end
+
+  -- Image mask
+  image_mask = string.gsub(config['conky']['image_mask'] or '', '%s+', '')
+end
+
+read_config()
 
 -- Setup/teardown
 function conky_setup_visualizer()
@@ -159,11 +214,7 @@ function conky_setup_visualizer()
   cairo_set_source_rgba(cr, rgb[1], rgb[2], rgb[3], opacity)
 
   -- Bar width calculation
-  if is_sideways then
-    bar_width = ((window_height - bar_spacing) // n_bars) - bar_spacing
-  else
-    bar_width = ((window_width - bar_spacing) // n_bars) - bar_spacing
-  end
+  bar_width = bar_width_getters[is_sideways and 'vertical' or 'horizontal']()
 
   -- Use an image mask instead of color if set in cava config
   if image_mask ~= '' then
@@ -208,6 +259,7 @@ end
 -- Main method
 function conky_visualizer()
   if (cr ~= nil) then
+    read_config()
     visualizer()
     cairo_fill(cr)
   end
