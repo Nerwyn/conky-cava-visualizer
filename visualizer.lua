@@ -69,9 +69,32 @@ local byte_size
 
 local color
 local rgb
-
 local opacity
+
 local image_mask
+local function set_image_mask()
+  if image_mask ~= '' and cr ~= nil then
+    local img_cs = cairo_image_surface_create_from_png(image_mask)
+    local img_width = cairo_image_surface_get_width(img_cs);
+    local img_height = cairo_image_surface_get_height(img_cs);
+
+    local scaled_img_cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, window_width, window_height)
+    local scaled_img_cr = cairo_create(scaled_img_cs)
+
+    local scale_x = window_width / img_width
+    local scale_y = window_height / img_height
+
+    cairo_scale(scaled_img_cr, scale_x, scale_y)
+    cairo_set_source_surface(scaled_img_cr, img_cs, 0, 0)
+    cairo_paint_with_alpha(scaled_img_cr, opacity)
+    cairo_set_source_surface(cr, scaled_img_cs, 0, 0)
+
+    cairo_destroy(scaled_img_cr)
+    cairo_surface_destroy(scaled_img_cs)
+    cairo_surface_destroy(img_cs)
+  end
+end
+
 
 -- Cava pipe setup
 local function read_cava()
@@ -193,7 +216,11 @@ local function read_config()
   end
 
   -- Image mask
-  image_mask = string.gsub(config['conky']['image_mask'] or '', '%s+', '')
+  local image_mask_new = string.gsub(config['conky']['image_mask'] or '', '%s+', '')
+  if image_mask ~= image_mask_new then
+    image_mask = image_mask_new
+    set_image_mask()
+  end
 end
 
 read_config()
@@ -217,26 +244,7 @@ function conky_setup_visualizer()
   bar_width = bar_width_getters[is_sideways and 'vertical' or 'horizontal']()
 
   -- Use an image mask instead of color if set in cava config
-  if image_mask ~= '' then
-    local img_cs = cairo_image_surface_create_from_png(image_mask)
-    local img_width = cairo_image_surface_get_width(img_cs);
-    local img_height = cairo_image_surface_get_height(img_cs);
-
-    local scaled_img_cs = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, window_width, window_height)
-    local scaled_img_cr = cairo_create(scaled_img_cs)
-
-    local scale_x = window_width / img_width
-    local scale_y = window_height / img_height
-
-    cairo_scale(scaled_img_cr, scale_x, scale_y)
-    cairo_set_source_surface(scaled_img_cr, img_cs, 0, 0)
-    cairo_paint_with_alpha(scaled_img_cr, opacity)
-    cairo_set_source_surface(cr, scaled_img_cs, 0, 0)
-
-    cairo_destroy(scaled_img_cr)
-    cairo_surface_destroy(scaled_img_cs)
-    cairo_surface_destroy(img_cs)
-  end
+  set_image_mask()
 end
 
 function conky_shutdown_visualizer()
