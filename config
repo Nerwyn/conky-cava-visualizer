@@ -8,7 +8,7 @@
 
 # Orientation to be used by conky (DO NOT use regular cava orientation option)
 # Can be top, bottom, horizontal, left, right, or vertical, defaults to bottom
-; orientation = bottom
+orientation = vertical
 
 # Bar color can be defined by hex code.
 ; color = #FFF
@@ -18,6 +18,7 @@
 
 # Path to a PNG image to use as a mask for the bars.
 ; image_mask = /full/path/to/your/image.png
+image_mask = /home/nerwyn/Pictures/wallpapers/green_space.png
 
 [general]
 

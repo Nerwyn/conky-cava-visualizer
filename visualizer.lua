@@ -3,18 +3,7 @@ require 'cairo_xlib'
 
 local cava_config_file = './config'
 local inifile = require 'inifile'
-
--- https://gist.github.com/fernandohenriques/12661bf250c8c2d8047188222cab7e28
-local function hex2rgb(hex)
-  hex = hex:gsub('#', '')
-  if hex:len() == 3 then
-    return { (tonumber('0x' .. hex:sub(1, 1)) * 17) / 255, (tonumber('0x' .. hex:sub(2, 2)) * 17) / 255,
-      (tonumber('0x' .. hex:sub(3, 3)) * 17) / 255 }
-  else
-    return { tonumber('0x' .. hex:sub(1, 2)) / 255, tonumber('0x' .. hex:sub(3, 4)) / 255,
-      tonumber('0x' .. hex:sub(5, 6)) / 255 }
-  end
-end
+local hex2rgb = require 'hex2rgb'
 
 -- Set on conky load and config read
 local cs
@@ -27,6 +16,7 @@ local n_bars
 local bar_spacing
 local bar_max
 
+local bar_width
 local bar_width_getters = {
   horizontal = function()
     return (((window_width or 0) - bar_spacing) // n_bars) - bar_spacing
@@ -36,11 +26,11 @@ local bar_width_getters = {
     return (((window_height or 0) - bar_spacing) // n_bars) - bar_spacing
   end
 }
-local bar_width
 
 local orientation
 local is_sideways
 
+local incrementor
 local incrementors = {
   horizontal = function(x, y)
     return x + bar_width + bar_spacing, y
@@ -50,8 +40,8 @@ local incrementors = {
     return x, y + bar_width + bar_spacing
   end
 }
-local incrementor
 
+local get_bar_height
 local bar_height_getters = {
   horizontal = function(value)
     return value * window_height // bar_max
@@ -61,7 +51,6 @@ local bar_height_getters = {
     return value * window_width // bar_max
   end
 }
-local get_bar_height
 
 local bit_format
 local byte_format
@@ -72,7 +61,7 @@ local rgb
 local opacity
 
 local image_mask
-local function set_image_mask()
+local function apply_image_mask_to_cr()
   if image_mask ~= '' and cr ~= nil then
     local img_cs = cairo_image_surface_create_from_png(image_mask)
     local img_width = cairo_image_surface_get_width(img_cs);
@@ -92,9 +81,11 @@ local function set_image_mask()
     cairo_destroy(scaled_img_cr)
     cairo_surface_destroy(scaled_img_cs)
     cairo_surface_destroy(img_cs)
+  else
+    cr = cairo_create(cs)
+    cairo_set_source_rgba(cr, rgb[1], rgb[2], rgb[3], opacity)
   end
 end
-
 
 -- Cava pipe setup
 local function read_cava()
@@ -219,7 +210,7 @@ local function read_config()
   local image_mask_new = string.gsub(config['conky']['image_mask'] or '', '%s+', '')
   if image_mask ~= image_mask_new then
     image_mask = image_mask_new
-    set_image_mask()
+    apply_image_mask_to_cr()
   end
 end
 
@@ -244,7 +235,7 @@ function conky_setup_visualizer()
   bar_width = bar_width_getters[is_sideways and 'vertical' or 'horizontal']()
 
   -- Use an image mask instead of color if set in cava config
-  set_image_mask()
+  apply_image_mask_to_cr()
 end
 
 function conky_shutdown_visualizer()
